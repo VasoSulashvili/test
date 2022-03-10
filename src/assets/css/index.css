@@ -1,0 +1,12 @@
+@font-face {
+  font-family: "Montserrat-Medium";
+  src: local("Montserrat-Medium"), url(../fonts/static/Montserrat-Medium.ttf);
+}
+
+@font-face {
+  font-family: "Rowdies-Regular";
+  src: url(../fonts/Rowdies-Regular.ttf);
+}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
