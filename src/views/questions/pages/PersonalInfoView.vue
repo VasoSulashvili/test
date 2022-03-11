@@ -1,9 +1,5 @@
 <template>
-  <BaseLayout
-    previous-view="welcome"
-    next-view="technicalSkills"
-    :view-error="viewError"
-  >
+  <BaseLayout :view-error="viewError">
     <!-- Left Side -->
     <!-- Header -->
     <template v-slot:left-side-header>

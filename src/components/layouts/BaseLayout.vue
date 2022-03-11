@@ -8,11 +8,7 @@
 
       <slot name="left-side-body"></slot>
       <div>
-        <BaseNav
-          :previous-view="previousView"
-          :next-view="nextView"
-          :view-error="viewError"
-        />
+        <BaseNav :view-error="viewError" />
       </div>
     </div>
     <!-- Right -->
@@ -34,8 +30,6 @@ export default {
     BaseNav,
   },
   props: {
-    previousView: String,
-    nextView: String,
     viewError: Boolean,
   },
 };

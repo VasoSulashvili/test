@@ -10,10 +10,11 @@ export default {
         phone: "+995591933382",
         // skills
         skills: [
-          {
-            id: 1,
-            experience: 3,
-          },
+          // {
+          //   id: 1,
+          //   experience: 3,
+          //   title: null,
+          // },
         ],
         // covid
         work_preference: "from_home",
@@ -27,15 +28,6 @@ export default {
       },
     };
   },
-  getters: {
-    checkPersonalInfo(state) {
-      return "ffffffffffffff" + "fffffffffff";
-      // if (state.data.first_name) {
-      //   return true;
-      // }
-      // return false;
-    },
-  },
   mutations: {
     setPersonalInfo(state, payload) {
       state.data.first_name = payload.firstName;
@@ -43,7 +35,9 @@ export default {
       state.data.email = payload.email;
       state.data.phone = payload.phone;
     },
-    setTechnicalSkills(state, payload) {},
+    setTechnicalSkills(state, payload) {
+      state.data.skills = payload;
+    },
     setCovid(state, payload) {},
   },
 };
