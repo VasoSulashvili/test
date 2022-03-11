@@ -3,16 +3,19 @@ export default {
     return {
       data: {
         token: "89nOpas|asdanjjh^&as",
-        first_name: "gela",
+        // personal info
+        first_name: "sss",
         last_name: "gelashvili",
         email: "gelashvili@gela.ge",
         phone: "+995591933382",
+        // skills
         skills: [
           {
             id: 1,
             experience: 3,
           },
         ],
+        // covid
         work_preference: "from_home",
         had_covid: true,
         had_covid_at: "2022-02-23",
@@ -23,5 +26,24 @@ export default {
         something_special: "I am special!",
       },
     };
+  },
+  getters: {
+    checkPersonalInfo(state) {
+      return "ffffffffffffff" + "fffffffffff";
+      // if (state.data.first_name) {
+      //   return true;
+      // }
+      // return false;
+    },
+  },
+  mutations: {
+    setPersonalInfo(state, payload) {
+      state.data.first_name = payload.firstName;
+      state.data.last_name = payload.lastName;
+      state.data.email = payload.email;
+      state.data.phone = payload.phone;
+    },
+    setTechnicalSkills(state, payload) {},
+    setCovid(state, payload) {},
   },
 };
