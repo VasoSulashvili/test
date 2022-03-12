@@ -4,10 +4,10 @@ export default {
       data: {
         token: "89nOpas|asdanjjh^&as",
         // personal info
-        first_name: "sss",
-        last_name: "gelashvili",
-        email: "gelashvili@gela.ge",
-        phone: "+995591933382",
+        first_name: null,
+        last_name: null,
+        email: null,
+        phone: null,
         // skills
         skills: [
           // {
@@ -17,11 +17,11 @@ export default {
           // },
         ],
         // covid
-        work_preference: "from_home",
-        had_covid: true,
-        had_covid_at: "2022-02-23",
-        vaccinated: true,
-        vaccinated_at: "2022-02-23",
+        work_preference: null, //"from_home",
+        had_covid: null,
+        had_covid_at: null,
+        vaccinated: null,
+        vaccinated_at: null,
         will_organize_devtalk: true,
         devtalk_topic: "I would ...",
         something_special: "I am special!",
@@ -38,6 +38,12 @@ export default {
     setTechnicalSkills(state, payload) {
       state.data.skills = payload;
     },
-    setCovid(state, payload) {},
+    setCovid(state, payload) {
+      state.data.work_preference = payload.work_preference;
+      state.data.had_covid = payload.had_covid;
+      state.data.had_covid_at = payload.had_covid_at;
+      state.data.vaccinated = payload.vaccinated;
+      state.data.vaccinated_at = payload.vaccinated_at;
+    },
   },
 };

@@ -6,7 +6,13 @@
           <img src="./../../assets/images/Previous.png" alt="" srcset="" />
         </RouterLink>
       </button>
-      <img v-else src="./../../assets/images/Previous.png" alt="" srcset="" />
+      <img
+        v-else
+        src="./../../assets/images/Previous.png"
+        alt=""
+        srcset=""
+        @click="$emit('callValidator')"
+      />
       <span
         v-for="(route, index) in questionsRoutes"
         :key="index"
@@ -17,7 +23,13 @@
           <img src="./../../assets/images/Next.png" alt="" srcset="" />
         </RouterLink>
       </button>
-      <img v-else src="./../../assets/images/Next.png" alt="" srcset="" />
+      <img
+        v-else
+        src="./../../assets/images/Next.png"
+        alt=""
+        srcset=""
+        @click="$emit('callValidator')"
+      />
     </div>
   </div>
 </template>
@@ -28,6 +40,7 @@ export default {
   components: {
     RouterLink,
   },
+  emits: ["callValidator"],
   data() {
     return {
       nextRoute: null,
@@ -52,11 +65,17 @@ export default {
   },
   methods: {
     setArrowRoutes() {
-      const routes = this.$router.getRoutes();
-      let routesName = [];
-      routes.forEach((route) => {
-        routesName.push(route.name);
-      });
+      // const routes = this.$router.getRoutes();
+      let routesName = [
+        "welcome",
+        "personalInfo",
+        "technicalSkills",
+        "covid",
+        "redberrianInsight",
+      ];
+      // routes.forEach((route) => {
+      //   routesName.push(route.name);
+      // });
       const routeIndex = routesName.indexOf(this.$route.name);
       if (routeIndex == 0) {
         this.previousRoute = routesName[routesName.length - 1];
@@ -68,6 +87,7 @@ export default {
       } else {
         this.nextRoute = routesName[routeIndex + 1];
       }
+      console.log(routeIndex, routesName);
     },
   },
   props: {

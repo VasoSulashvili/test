@@ -6,7 +6,7 @@
         :value="selectValue"
         @input="$emit('update:selectValue', $event.target.value)"
       >
-        <option value="">Skills</option>
+        <option disabled value="">Skills</option>
         <option
           v-for="(item, index) in selectData"
           :key="index"

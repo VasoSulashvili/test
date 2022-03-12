@@ -5,8 +5,8 @@ import applicationsList from "../views/ApplicationsListView.vue";
 import QuestionView from "../views/questions/QuestionView.vue";
 import PersonalInfoView from "../views/questions/pages/PersonalInfoView.vue";
 import TechnicalSkillView from "../views/questions/pages/TechnicalSkillView.vue";
-import CovidView from "../views/questions/pages/TechnicalSkillView.vue";
-// import TechnicalSkillView from "../views/questions/pages/views/TechnicalSkillView.vue";
+import CovidView from "../views/questions/pages/CovidView.vue";
+import RedberrianInsightView from "../views/questions/pages/RedberrianInsightView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -47,6 +47,15 @@ const router = createRouter({
           path: "covid",
           name: "covid",
           component: CovidView,
+          beforeEnter: (to, from) => {
+            // reject the navigation
+            return true;
+          },
+        },
+        {
+          path: "redberrian/insight",
+          name: "redberrianInsight",
+          component: RedberrianInsightView,
           beforeEnter: (to, from) => {
             // reject the navigation
             return true;

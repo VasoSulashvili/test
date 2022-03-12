@@ -1,5 +1,5 @@
 <template>
-  <main class="h-screen grid grid-cols-2">
+  <main class="min-h-screen grid grid-cols-2">
     <!-- Left -->
     <div class="pl-36 pr-20 py-24 bg-white">
       <div class="h-60">
@@ -8,7 +8,10 @@
 
       <slot name="left-side-body"></slot>
       <div>
-        <BaseNav :view-error="viewError" />
+        <BaseNav
+          :view-error="viewError"
+          @call-validator="$emit('callValidator')"
+        />
       </div>
     </div>
     <!-- Right -->
@@ -29,6 +32,7 @@ export default {
   components: {
     BaseNav,
   },
+  emits: ["callValidator"],
   props: {
     viewError: Boolean,
   },
