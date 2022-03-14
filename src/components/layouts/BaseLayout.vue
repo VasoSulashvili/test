@@ -11,6 +11,7 @@
         <BaseNav
           :view-error="viewError"
           @call-validator="$emit('callValidator')"
+          @set-data-to-store="$emit('setDataToStore')"
         />
       </div>
     </div>
@@ -32,7 +33,7 @@ export default {
   components: {
     BaseNav,
   },
-  emits: ["callValidator"],
+  emits: ["callValidator", "setDataToStore"],
   props: {
     viewError: Boolean,
   },

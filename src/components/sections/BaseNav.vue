@@ -19,7 +19,7 @@
         :class="[index > questionRouteIndex ? 'dot-muted' : 'dot-unmuted']"
       ></span>
       <button v-if="!viewError">
-        <RouterLink :to="{ name: nextRoute }">
+        <RouterLink @click="$emit('setDataToStore')" :to="{ name: nextRoute }">
           <img src="./../../assets/images/Next.png" alt="" srcset="" />
         </RouterLink>
       </button>
@@ -40,7 +40,7 @@ export default {
   components: {
     RouterLink,
   },
-  emits: ["callValidator"],
+  emits: ["callValidator", "setDataToStore"],
   data() {
     return {
       nextRoute: null,
@@ -72,6 +72,7 @@ export default {
         "technicalSkills",
         "covid",
         "redberrianInsight",
+        "submit",
       ];
       // routes.forEach((route) => {
       //   routesName.push(route.name);
@@ -87,7 +88,6 @@ export default {
       } else {
         this.nextRoute = routesName[routeIndex + 1];
       }
-      console.log(routeIndex, routesName);
     },
   },
   props: {

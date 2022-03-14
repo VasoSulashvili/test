@@ -1,5 +1,9 @@
 <template>
-  <BaseLayout :view-error="viewError">
+  <BaseLayout
+    :view-error="viewError"
+    @call-validator="callValidators()"
+    @set-data-to-store="setDataToStore()"
+  >
     <!-- Left Side -->
     <!-- Header -->
     <template v-slot:left-side-header>
@@ -10,7 +14,7 @@
     <template v-slot:left-side-body>
       <div class="mx-auto flex flex-col items-center">
         <BaseSelect
-          :select-data="fakeSkills"
+          :select-data="$store.state.ui.skills"
           :select-error="errors.selectedData"
           v-model:selectValue="selectedData"
         />
@@ -71,6 +75,7 @@ import SectionHeader from "../../../components/partials/SectionHeader.vue";
 import BaseInput from "../../../components/partials/BaseInput.vue";
 import BaseSelect from "../../../components/partials/BaseSelect.vue";
 import AddedSkill from "../../../components/sections/AddedSkill.vue";
+import TestView from "../../TestView.vue";
 export default {
   components: {
     BaseLayout,
@@ -81,23 +86,6 @@ export default {
   },
   data() {
     return {
-      fakeSkills: [
-        {
-          id: 1,
-          experience: 3,
-          title: "PHP",
-        },
-        {
-          id: 2,
-          experience: 1,
-          title: "VUE",
-        },
-        {
-          id: 3,
-          experience: 4,
-          title: "MYSQL",
-        },
-      ],
       // map to store
       skills: [],
 
@@ -105,75 +93,24 @@ export default {
       experience: null,
 
       errors: {
-        selectedData: false,
-        experience: false,
-        // email: "required",
-        // phone: false,
+        selectedData: true,
+        experience: true,
       },
       viewError: false,
     };
   },
   watch: {
-    // selectedData(newData, oldData) {
-    //   const data = String(newData);
-    //   if (data.length < 2) {
-    //     this.errors.selectedData = "First Name must contain at least 2 characters";
-    //   } else {
-    //     this.errors.selectedData = false;
-    //   }
-    //   // this.updateViewError();
-    // },
-    id(newData, oldData) {
-      // const data = String(newData);
-      // if (data.length < 2) {
-      //   this.errors.firstName = "First Name must contain at least 2 characters";
-      // } else {
-      //   this.errors.firstName = false;
-      // }
-      // this.updateViewError();
+    skills(newData, oldData) {
+      this.updateViewError();
     },
-    // lastName(newData, oldData) {
-    //   const data = String(newData);
-    //   if (data.length < 2) {
-    //     this.errors.lastName = "Last Name must contain at least 2 characters";
-    //   } else {
-    //     this.errors.lastName = false;
-    //   }
-    //   this.updateViewError();
-    // },
-    // email(newData, oldData) {
-    //   let data = String(newData)
-    //     .toLowerCase()
-    //     .match(
-    //       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    //     );
-    //   if (!data) {
-    //     this.errors.email = "Email addres must be valid email format";
-    //   } else {
-    //     this.errors.email = false;
-    //   }
-    //   this.updateViewError();
-    // },
-    // phone(newData, oldData) {
-    //   if (newData.length > 0) {
-    //     this.errors.phone =
-    //       "Mobile number must be valid georgian mobile format";
-    //   } else {
-    //     this.errors.phone = false;
-    //   }
-    //   this.updateViewError();
-    // },
   },
   methods: {
-    updateViewError() {
-      const errors = Object.values(this.errors);
-      const error = new Set(errors);
-      if (error.size > 1 || error.has("required")) {
-        this.viewError = true;
-      } else {
-        this.viewError = false;
-      }
+    // Set Data To Store
+    setDataToStore() {
+      const data = this.skills;
+      this.$store.commit("setTechnicalSkills", data);
     },
+    // Setting Component Data From Store
     setStoreDataToComponent() {
       const data = JSON.stringify(this.$store.state.data.skills);
       if (Object.keys(JSON.parse(data)).length === 0) {
@@ -182,18 +119,44 @@ export default {
         this.skills = JSON.parse(data);
       }
     },
-    addSkill() {
+    // Errors
+    updateViewError() {
+      if (this.skills.length > 0) {
+        this.viewError = false;
+      } else {
+        this.viewError = true;
+      }
+    },
+    // Validators
+    callValidators() {
+      this.validatorSelectedData();
+      this.validatorExperience();
+    },
+    validatorSelectedData() {
       if (this.selectedData == null || this.selectedData.split("|")[0] == "") {
         this.errors.selectedData = "Please select a skill";
       } else {
         this.errors.selectedData = false;
       }
+    },
+    validatorExperience() {
       if (!this.experience) {
         this.errors.experience = "Please fill experience duration in year";
       } else {
         this.errors.experience = false;
       }
-      if (this.selectedData !== null && this.experience !== null) {
+    },
+
+    // Other
+    addSkill() {
+      this.validatorSelectedData();
+      this.validatorExperience();
+      if (
+        this.selectedData !== null &&
+        this.experience !== null &&
+        !this.errors.selectedData &&
+        !this.errors.experience
+      ) {
         const id = parseInt(this.selectedData.split("|")[0]);
         const title = this.selectedData.split("|")[1];
         const experience = parseInt(this.experience);
@@ -208,17 +171,14 @@ export default {
           this.selectedData = null;
           this.experience = null;
           this.errors.selectedData = false;
+          this.errors.experience = false;
         } else {
           this.errors.selectedData =
             "This skill already exists, please select another one!";
         }
-
-        if (this.skills.length > 0) {
-          this.viewError = false;
-        }
+        // Update viewError
+        this.updateViewError();
       }
-
-      console.log(this.skills);
     },
     removeSkill(skill) {
       const a = JSON.stringify(this.skills);
@@ -227,18 +187,20 @@ export default {
         return item.id != skill.id;
       });
       this.skills = updatedSkills;
+      // Update viewError
+      this.updateViewError();
     },
   },
+  beforeCreate() {
+    this.$store.dispatch("setSkills");
+  },
   created() {
-    this.updateViewError();
     this.setStoreDataToComponent();
-    if (this.skills.length == 0) {
-      this.viewError = true;
-    }
+    this.updateViewError();
   },
   beforeUnmount() {
-    const data = this.skills;
-    this.$store.commit("setTechnicalSkills", data);
+    // const data = this.skills;
+    // this.$store.commit("setTechnicalSkills", data);
   },
 };
 </script>

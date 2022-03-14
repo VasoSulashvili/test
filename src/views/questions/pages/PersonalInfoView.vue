@@ -1,5 +1,9 @@
 <template>
-  <BaseLayout :view-error="viewError">
+  <BaseLayout
+    :view-error="viewError"
+    @call-validator="callValidators()"
+    @set-data-to-store="setDataToStore()"
+  >
     <!-- Left Side -->
     <!-- Header -->
     <template v-slot:left-side-header>
@@ -13,15 +17,15 @@
       <div class="mx-auto flex flex-col items-center">
         <BaseInput
           input-type="text"
-          :input-error="errors.firstName"
+          :input-error="errors.first_name"
           input-placeholder="First Name"
-          v-model:inputValue="firstName"
+          v-model:inputValue="first_name"
         />
         <BaseInput
           input-type="text"
-          :input-error="errors.lastName"
+          :input-error="errors.last_name"
           input-placeholder="Last Name"
-          v-model:inputValue="lastName"
+          v-model:inputValue="last_name"
         />
         <BaseInput
           input-type="email"
@@ -73,92 +77,154 @@ export default {
   },
   data() {
     return {
-      firstName: null,
-      lastName: null,
+      first_name: null,
+      last_name: null,
       email: null,
       phone: null,
 
       errors: {
-        firstName: "required",
-        lastName: "required",
-        email: "required",
+        first_name: "*",
+        last_name: "*",
+        email: "*",
         phone: false,
       },
-      viewError: false,
+      viewError: true,
     };
   },
   watch: {
-    firstName(newData, oldData) {
-      const data = String(newData);
-      if (data.length < 2) {
-        this.errors.firstName = "First Name must contain at least 2 characters";
-      } else {
-        this.errors.firstName = false;
-      }
-      this.updateViewError();
+    first_name(newData, oldData) {
+      this.validatorFirstName();
     },
-    lastName(newData, oldData) {
-      const data = String(newData);
-      if (data.length < 2) {
-        this.errors.lastName = "Last Name must contain at least 2 characters";
-      } else {
-        this.errors.lastName = false;
-      }
-      this.updateViewError();
+    last_name(newData, oldData) {
+      this.validatorLastName();
     },
     email(newData, oldData) {
-      let data = String(newData)
-        .toLowerCase()
-        .match(
-          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-        );
-      if (!data) {
-        this.errors.email = "Email addres must be valid email format";
-      } else {
-        this.errors.email = false;
-      }
-      this.updateViewError();
+      this.validatorEmail();
     },
     phone(newData, oldData) {
-      if (newData.length > 0) {
-        this.errors.phone =
-          "Mobile number must be valid georgian mobile format";
-      } else {
-        this.errors.phone = false;
-      }
-      this.updateViewError();
+      this.validatorPhone();
     },
   },
   methods: {
+    // Set Data To Store
+    setDataToStore() {
+      const data = {
+        first_name: this.first_name,
+        last_name: this.last_name,
+        email: this.email,
+        phone: this.phone,
+      };
+      this.$store.commit("setPersonalInfo", data);
+    },
+    // Setting Component Data From Store
+    setStoreDataToComponent() {
+      this.first_name = this.$store.state.data.first_name;
+      this.last_name = this.$store.state.data.last_name;
+      this.email = this.$store.state.data.email;
+      this.phone = this.$store.state.data.phone;
+    },
+    // Errors
     updateViewError() {
       const errors = Object.values(this.errors);
       const error = new Set(errors);
-      if (error.size > 1 || error.has("required")) {
+      if (error.size > 1 || error.has(null)) {
         this.viewError = true;
       } else {
         this.viewError = false;
       }
     },
-    setStoreDataToComponent() {
-      this.firstName = this.$store.state.data.first_name;
-      this.lastName = this.$store.state.data.last_name;
-      this.email = this.$store.state.data.email;
-      this.phone = this.$store.state.data.phone;
+    // Validators
+    callValidators() {
+      this.validatorFirstName();
+      this.validatorLastName();
+      this.validatorEmail();
+      this.validatorPhone();
+      this.updateViewError();
+      this.setDataToStore();
+    },
+    validatorFirstName() {
+      const data = this.first_name ? String(this.first_name) : null;
+      if (data == null) {
+        this.errors.first_name = "First Name is required";
+      } else {
+        if (data.length < 2) {
+          this.errors.first_name =
+            "First Name must contain at least 2 characters";
+        } else {
+          this.errors.first_name = false;
+        }
+      }
+      this.updateViewError();
+    },
+    validatorLastName() {
+      const data = this.last_name ? String(this.last_name) : null;
+      if (data == null) {
+        this.errors.last_name = "Last Name is required";
+      } else {
+        if (data.length < 2) {
+          this.errors.last_name =
+            "Last Name must contain at least 2 characters";
+        } else {
+          this.errors.last_name = false;
+        }
+      }
+
+      this.updateViewError();
+    },
+    validatorEmail() {
+      let data = this.email ? String(this.email) : null;
+      if (data == null) {
+        this.errors.email = "Email is required";
+      } else {
+        data
+          .toLowerCase()
+          .match(
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+          );
+        if (!data) {
+          this.errors.email = "Email addres must be valid email format";
+        } else {
+          this.errors.email = false;
+        }
+      }
+
+      this.updateViewError();
+    },
+    validatorPhone() {
+      if (this.phone) {
+        if (this.phone.length > 0) {
+          this.errors.phone =
+            "Mobile number must be valid georgian mobile format";
+        } else {
+          this.errors.phone = false;
+        }
+      } else {
+        this.errors.phone = false;
+      }
+
+      this.updateViewError();
     },
   },
   created() {
-    this.updateViewError();
     this.setStoreDataToComponent();
+    const errors = Object.values(this.errors);
+    const error = new Set(errors);
+    if (error.has("*")) {
+      this.viewError = true;
+    } else {
+      this.callValidators();
+    }
+    this.updateViewError();
   },
   beforeUnmount() {
     // set component's data to store
-    const data = {
-      firstName: this.firstName,
-      lastName: this.lastName,
-      email: this.email,
-      phone: this.phone,
-    };
-    this.$store.commit("setPersonalInfo", data);
+    // const data = {
+    //   first_name: this.first_name,
+    //   last_name: this.last_name,
+    //   email: this.email,
+    //   phone: this.phone,
+    // };
+    // this.$store.commit("setPersonalInfo", data);
   },
 };
 </script>

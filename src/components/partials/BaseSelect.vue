@@ -6,7 +6,7 @@
         :value="selectValue"
         @input="$emit('update:selectValue', $event.target.value)"
       >
-        <option disabled value="">Skills</option>
+        <option value="">Skills</option>
         <option
           v-for="(item, index) in selectData"
           :key="index"
@@ -30,7 +30,7 @@
 <script>
 export default {
   props: {
-    selectData: String,
+    selectData: { type: [Array, Object], required: true },
     selectError: { type: [String, Boolean], required: false },
     selectValue: String,
   },

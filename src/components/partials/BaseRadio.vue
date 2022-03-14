@@ -38,7 +38,7 @@ export default {
     radioName: { type: String, required: true },
     radioValue: { type: String, required: true },
     radioLabel: { type: String, required: true },
-    modelValue: { type: [String, Number, Boolean], required: true },
+    modelValue: { type: [String, Number, Boolean, null], required: true },
   },
   computed: {
     isChecked() {

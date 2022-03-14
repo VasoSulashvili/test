@@ -1,13 +1,21 @@
-export default {
+import { createStore } from "vuex";
+const store = createStore({
   state() {
     return {
+      dd: false,
+      ui: {
+        skills: [],
+        applications: [],
+      },
       data: {
         token: "89nOpas|asdanjjh^&as",
+
         // personal info
         first_name: null,
         last_name: null,
         email: null,
         phone: null,
+
         // skills
         skills: [
           // {
@@ -22,16 +30,32 @@ export default {
         had_covid_at: null,
         vaccinated: null,
         vaccinated_at: null,
-        will_organize_devtalk: true,
-        devtalk_topic: "I would ...",
-        something_special: "I am special!",
+        //redberrian
+        will_organize_devtalk: null,
+        devtalk_topic: null,
+        something_special: null,
       },
     };
   },
+  actions: {
+    async setSkills(context) {
+      const response = await fetch(
+        "https://bootcamp-2022.devtest.ge/api/skills"
+      );
+      if (response.ok) {
+        const data = await response.json();
+        context.commit("setSkills", await data);
+      }
+      // const skills = await response.json();
+    },
+  },
   mutations: {
+    setSkills(state, payload) {
+      state.ui.skills = payload;
+    },
     setPersonalInfo(state, payload) {
-      state.data.first_name = payload.firstName;
-      state.data.last_name = payload.lastName;
+      state.data.first_name = payload.first_name;
+      state.data.last_name = payload.last_name;
       state.data.email = payload.email;
       state.data.phone = payload.phone;
     },
@@ -45,5 +69,11 @@ export default {
       state.data.vaccinated = payload.vaccinated;
       state.data.vaccinated_at = payload.vaccinated_at;
     },
+    setRedberrianInsight(state, payload) {
+      state.data.will_organize_devtalk = payload.will_organize_devtalk;
+      state.data.devtalk_topic = payload.devtalk_topic;
+      state.data.something_special = payload.something_special;
+    },
   },
-};
+});
+export { store };

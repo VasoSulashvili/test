@@ -1,7 +1,7 @@
 <template>
   <p
     class="font-rb-montserat-reg text-rb-red mt-2"
-    v-if="errorMessage || errorMessage == 'false'"
+    v-if="errorMessage && errorMessage != '*'"
   >
     <span>* </span>
     {{ errorMessage }}

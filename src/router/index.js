@@ -1,7 +1,15 @@
 import { createRouter, createWebHistory } from "vue-router";
-
+import { store } from "../store/Store";
+import {
+  // personalInfoMiddleware,
+  technicalSkillsMiddleware,
+  covidMiddleware,
+  redberrianInsightMiddleware,
+  submitMiddleware,
+} from "../middlewares/middlewares";
 import WelcomeView from "../views/WelcomeView.vue";
-import applicationsList from "../views/ApplicationsListView.vue";
+import ApplicationsList from "../views/ApplicationsListView.vue";
+import SubmitView from "../views/SubmitView.vue";
 import QuestionView from "../views/questions/QuestionView.vue";
 import PersonalInfoView from "../views/questions/pages/PersonalInfoView.vue";
 import TechnicalSkillView from "../views/questions/pages/TechnicalSkillView.vue";
@@ -19,7 +27,7 @@ const router = createRouter({
     {
       path: "/applications/list",
       name: "applicationsList",
-      component: applicationsList,
+      component: ApplicationsList,
     },
     {
       path: "/questions",
@@ -31,7 +39,6 @@ const router = createRouter({
           name: "personalInfo",
           component: PersonalInfoView,
           beforeEnter: (to, from) => {
-            // reject the navigation
             return true;
           },
         },
@@ -40,7 +47,11 @@ const router = createRouter({
           name: "technicalSkills",
           component: TechnicalSkillView,
           beforeEnter: (to, from) => {
-            return true;
+            return technicalSkillsMiddleware(
+              router,
+              "personalInfo",
+              store.state.data
+            );
           },
         },
         {
@@ -48,8 +59,7 @@ const router = createRouter({
           name: "covid",
           component: CovidView,
           beforeEnter: (to, from) => {
-            // reject the navigation
-            return true;
+            return covidMiddleware(router, "technicalSkills", store.state.data);
           },
         },
         {
@@ -57,11 +67,22 @@ const router = createRouter({
           name: "redberrianInsight",
           component: RedberrianInsightView,
           beforeEnter: (to, from) => {
-            // reject the navigation
-            return true;
+            return redberrianInsightMiddleware(
+              router,
+              "covid",
+              store.state.data
+            );
           },
         },
       ],
+    },
+    {
+      path: "/submit",
+      name: "submit",
+      component: SubmitView,
+      beforeEnter: (to, from) => {
+        return submitMiddleware(router, "redberrianInsight", store.state.data);
+      },
     },
   ],
 });

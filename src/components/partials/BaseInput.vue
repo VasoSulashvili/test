@@ -12,7 +12,7 @@
 
     <p
       class="font-rb-montserat-reg text-rb-red mt-2"
-      v-if="inputError.length > 0"
+      v-if="inputError !== null && inputError.length > 0 && inputError !== '*'"
     >
       <span>* </span>
       {{ inputError }}

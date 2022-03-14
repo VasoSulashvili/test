@@ -1,5 +1,9 @@
 <template>
-  <BaseLayout :view-error="viewError" @call-validator="callValidators()">
+  <BaseLayout
+    :view-error="viewError"
+    @call-validator="callValidators()"
+    @set-data-to-store="setDataToStore()"
+  >
     <!-- Left Side -->
     <!-- Header -->
     <template v-slot:left-side-header>
@@ -127,20 +131,6 @@
     <!-- Body -->
     <template v-slot:right-side-body>
       <div>
-        <p><span>Work from </span>{{ work_preference }}</p>
-        <p><span>Covid </span>{{ had_covid }}</p>
-        <p><span>Covid at </span>{{ had_covid_at }}</p>
-        <p><span>Vaccinated </span>{{ vaccinated }}</p>
-        <p><span>Vaccinated at </span>{{ vaccinated_at }}</p>
-        <hr />
-        <p><span>error Work from </span>{{ errors.work_preference }}</p>
-        <p><span>error Covid </span>{{ errors.had_covid }}</p>
-        <p><span>error Covid at </span>{{ errors.had_covid_at }}</p>
-        <p><span>error Vaccinated </span>{{ errors.vaccinated }}</p>
-        <p><span>error Vaccinated at </span>{{ errors.vaccinated_at }}</p>
-        <hr />
-      </div>
-      <div>
         As this infamous pandemic took over the world, we adjusted our working
         practices so that our employees can be as safe and comfortable as
         possible. We have a hybrid work environment, so you can either work from
@@ -155,18 +145,15 @@
 </template>
 
 <script>
-import BaseLayout from "../../../components/layouts/BaseLayout.vue";
 import BaseError from "../../../components/partials/BaseError.vue";
 import SectionHeader from "../../../components/partials/SectionHeader.vue";
-import BaseInput from "../../../components/partials/BaseInput.vue";
 import BaseRadio from "../../../components/partials/BaseRadio.vue";
 import QuestionAnswer from "../../../components/sections/QuestionAnswer.vue";
 import BaseDateInput from "../../../components/partials/BaseDateInput.vue";
+
 export default {
   components: {
-    BaseLayout,
     SectionHeader,
-    BaseInput,
     BaseRadio,
     QuestionAnswer,
     BaseDateInput,
@@ -183,10 +170,10 @@ export default {
       vaccinated_at: null, // 2022-02-23
 
       errors: {
-        work_preference: null,
-        had_covid: null,
+        work_preference: "*",
+        had_covid: "*",
         had_covid_at: false,
-        vaccinated: null,
+        vaccinated: "*",
         vaccinated_at: false,
       },
       viewError: false,
@@ -209,38 +196,53 @@ export default {
         this.had_covid_at = null;
       }
       this.validatorHadCovid();
+      this.validatorHadCovidAt();
     },
     vaccinated(newData, oldData) {
       if (newData) {
         this.vaccinated_at = null;
       }
       this.validatorVaccinated();
+      this.validatorVaccinatedAt();
     },
     had_covid_at(newData, oldData) {
       this.validatorHadCovidAt();
     },
-
     vaccinated_at(newData, oldData) {
       this.validatorVaccinatedAt();
     },
   },
   methods: {
-    setCovidStoreData() {
+    // Set Data To Store
+    setDataToStore() {
+      const data = {
+        work_preference: this.work_preference,
+        had_covid: this.had_covid,
+        had_covid_at: this.had_covid_at,
+        vaccinated: this.vaccinated,
+        vaccinated_at: this.vaccinated_at,
+      };
+      this.$store.commit("setCovid", data);
+    },
+    // Setting Component Data From Store
+    setStoreDataToComponent() {
       this.work_preference = this.$store.state.data.work_preference;
       this.had_covid = this.$store.state.data.had_covid;
       this.had_covid_at = this.$store.state.data.had_covid_at;
       this.vaccinated = this.$store.state.data.vaccinated;
       this.vaccinated_at = this.$store.state.data.vaccinated_at;
     },
+    // Errors
     updateViewError() {
       const errors = Object.values(this.errors);
       const error = new Set(errors);
-      if (error.size > 1 || error.has("required")) {
+      if (error.size > 1 || error.has("*")) {
         this.viewError = true;
       } else {
         this.viewError = false;
       }
     },
+    // Validators
     callValidators() {
       this.validatorWorkPreference();
       this.validatorHadCovid();
@@ -258,6 +260,7 @@ export default {
       } else {
         this.errors.work_preference = false;
       }
+      this.updateViewError();
     },
     validatorHadCovid() {
       if (this.had_covid === null) {
@@ -265,6 +268,7 @@ export default {
       } else {
         this.errors.had_covid = false;
       }
+      this.updateViewError();
     },
     validatorVaccinated() {
       if (this.vaccinated === null) {
@@ -272,6 +276,7 @@ export default {
       } else {
         this.errors.vaccinated = false;
       }
+      this.updateViewError();
     },
     validatorHadCovidAt() {
       if (this.had_covid_at) {
@@ -282,6 +287,7 @@ export default {
         } else {
           this.errors.had_covid_at = false;
         }
+        this.updateViewError();
       }
       if (
         this.had_covid &&
@@ -291,6 +297,7 @@ export default {
       ) {
         this.errors.had_covid_at = "Illness period is required";
       }
+      this.updateViewError();
     },
     validatorVaccinatedAt() {
       if (this.vaccinated_at) {
@@ -310,21 +317,30 @@ export default {
       ) {
         this.errors.vaccinated_at = "Vaccinated date is required";
       }
+      this.updateViewError();
     },
   },
   created() {
-    this.setCovidStoreData();
+    this.setStoreDataToComponent();
+    const errors = Object.values(this.errors);
+    const error = new Set(errors);
+    if (error.has("*")) {
+      this.viewError = true;
+    } else {
+      this.callValidators();
+    }
+    // this.callValidators();
     this.updateViewError();
   },
   beforeUnmount() {
-    const data = {
-      work_preference: this.work_preference,
-      had_covid: this.had_covid,
-      had_covid_at: this.had_covid_at,
-      vaccinated: this.vaccinated,
-      vaccinated_at: this.vaccinated_at,
-    };
-    this.$store.commit("setCovid", data);
+    // const data = {
+    //   work_preference: this.work_preference,
+    //   had_covid: this.had_covid,
+    //   had_covid_at: this.had_covid_at,
+    //   vaccinated: this.vaccinated,
+    //   vaccinated_at: this.vaccinated_at,
+    // };
+    // this.$store.commit("setCovid", data);
   },
 };
 </script>
