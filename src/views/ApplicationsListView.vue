@@ -1,6 +1,7 @@
 <template>
   <main class="min-h-screen pt-36 grid grid-cols-1">
     <div class="mx-auto w-8/12">
+      <!-- <pre>{{ skills }}</pre> -->
       <h1 class="font-rb-rowdies-reg text-white mb-16 pl-8">
         Submitted Applications
       </h1>
@@ -8,11 +9,7 @@
         >{{ applications }} {{ this.$store.state.ui.applications }}</pre
       > -->
 
-      <div
-        class="mb-2"
-        v-for="(item, index) in this.$store.state.ui.applications"
-        :key="index"
-      >
+      <div class="mb-2" v-for="(item, index) in applications" :key="index">
         <h2
           class="bg-rb-red px-5 py-2 text-white"
           @click="activeTab = 'tab_' + index"
@@ -46,7 +43,7 @@
               <ApplicationSectionInput
                 v-for="skill in item.skills"
                 :key="skill.id"
-                :label="skill.id"
+                :label="skills[skill.id].title"
                 :value="'Years of Experience: ' + skill.experience"
               />
             </template>
@@ -125,6 +122,8 @@ export default {
   },
   data() {
     return {
+      skills: [],
+      applications: [],
       activeTab: null,
       work_preference_options: [
         { title: "From Home", value: "from_home" },
@@ -145,22 +144,36 @@ export default {
       ],
     };
   },
-  //   methods: {
-  //     setStoreDataToComponent() {
-  //       const data = JSON.stringify(this.$store.state.ui.applications);
-  //       console.log(data);
-  //       if (data.length === 0) {
-  //         this.applications = [];
-  //       } else {
-  //         this.applications = JSON.parse(data);
-  //       }
-  //     },
-  //   },
-  //   created() {
-  //     this.setStoreDataToComponent();
-  //   },
+  methods: {
+    async setApplications() {
+      const response = await fetch(
+        "https://bootcamp-2022.devtest.ge/api/applications?token=004599cc-9364-4ff9-bb87-48a276728275"
+      );
+      if (response.ok) {
+        this.applications = await response.json();
+      }
+    },
+    async setSkills() {
+      const response = await fetch(
+        "https://bootcamp-2022.devtest.ge/api/skills"
+      );
+      if (response.ok) {
+        let skills = {};
+        const data = await response.json();
+        await data.forEach((element) => {
+          skills[element.id] = element;
+        });
+        this.skills = skills;
+      }
+      // const skills = await response.json();
+    },
+  },
   beforeCreate() {
     this.$store.dispatch("setApplications");
+  },
+  created() {
+    this.setSkills();
+    this.setApplications();
   },
 };
 </script>

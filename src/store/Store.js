@@ -49,16 +49,6 @@ const store = createStore({
       }
       // const skills = await response.json();
     },
-    async setApplications(context) {
-      const response = await fetch(
-        "https://bootcamp-2022.devtest.ge/api/applications?token=" +
-          context.state.token_stolen
-      );
-      if (response.ok) {
-        const data = await response.json();
-        context.commit("setApplications", await data);
-      }
-    },
   },
   mutations: {
     setSkills(state, payload) {
