@@ -2,13 +2,14 @@ import { createStore } from "vuex";
 const store = createStore({
   state() {
     return {
-      dd: false,
+      submited: false,
+      token_stolen: "004599cc-9364-4ff9-bb87-48a276728275",
       ui: {
         skills: [],
         applications: [],
       },
       data: {
-        token: "89nOpas|asdanjjh^&as",
+        token: "7b6509c7-1a2a-4ee9-838a-e9406fcc1d92",
 
         // personal info
         first_name: null,
@@ -48,10 +49,23 @@ const store = createStore({
       }
       // const skills = await response.json();
     },
+    async setApplications(context) {
+      const response = await fetch(
+        "https://bootcamp-2022.devtest.ge/api/applications?token=" +
+          context.state.token_stolen
+      );
+      if (response.ok) {
+        const data = await response.json();
+        context.commit("setApplications", await data);
+      }
+    },
   },
   mutations: {
     setSkills(state, payload) {
       state.ui.skills = payload;
+    },
+    setApplications(state, payload) {
+      state.ui.applications = payload;
     },
     setPersonalInfo(state, payload) {
       state.data.first_name = payload.first_name;
@@ -73,6 +87,9 @@ const store = createStore({
       state.data.will_organize_devtalk = payload.will_organize_devtalk;
       state.data.devtalk_topic = payload.devtalk_topic;
       state.data.something_special = payload.something_special;
+    },
+    submited(state) {
+      state.submited = true;
     },
   },
 });

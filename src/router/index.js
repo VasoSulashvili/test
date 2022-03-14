@@ -10,6 +10,7 @@ import {
 import WelcomeView from "../views/WelcomeView.vue";
 import ApplicationsList from "../views/ApplicationsListView.vue";
 import SubmitView from "../views/SubmitView.vue";
+import ThankView from "../views/ThankView.vue";
 import QuestionView from "../views/questions/QuestionView.vue";
 import PersonalInfoView from "../views/questions/pages/PersonalInfoView.vue";
 import TechnicalSkillView from "../views/questions/pages/TechnicalSkillView.vue";
@@ -82,6 +83,14 @@ const router = createRouter({
       component: SubmitView,
       beforeEnter: (to, from) => {
         return submitMiddleware(router, "redberrianInsight", store.state.data);
+      },
+    },
+    {
+      path: "/thank",
+      name: "thank",
+      component: ThankView,
+      beforeEnter: (to, from) => {
+        store.state.submited ? true : router.push({ name: "welcome" });
       },
     },
   ],
