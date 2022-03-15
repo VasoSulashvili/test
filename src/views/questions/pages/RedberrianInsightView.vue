@@ -22,6 +22,7 @@
 
           <template #question-option>
             <BaseRadio
+              radio-id="will_organize_devtalk_true"
               radio-name="will_organize_devtalk"
               v-model:radioValue="will_organize_devtalk"
               radio-value="true"
@@ -29,6 +30,7 @@
               :model-value="will_organize_devtalk"
             />
             <BaseRadio
+              radio-id="will_organize_devtalk_false"
               radio-name="will_organize_devtalk"
               v-model:radioValue="will_organize_devtalk"
               radio-value="false"

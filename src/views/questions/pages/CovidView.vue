@@ -21,6 +21,7 @@
           </template>
           <template #question-option>
             <BaseRadio
+              radio-id="work_preference_from_office"
               radio-name="work_preference"
               v-model:radioValue="work_preference"
               radio-value="from_office"
@@ -28,6 +29,7 @@
               :model-value="work_preference"
             />
             <BaseRadio
+              radio-id="work_preference_from_home"
               radio-name="work_preference"
               v-model:radioValue="work_preference"
               radio-value="from_home"
@@ -35,6 +37,7 @@
               :model-value="work_preference"
             />
             <BaseRadio
+              radio-id="work_preference_hybrid"
               radio-name="work_preference"
               v-model:radioValue="work_preference"
               radio-value="hybrid"
@@ -52,6 +55,7 @@
           </template>
           <template #question-option>
             <BaseRadio
+              radio-id="had_covid_true"
               radio-name="had_covid"
               v-model:radioValue="had_covid"
               radio-value="true"
@@ -59,6 +63,7 @@
               :model-value="had_covid"
             />
             <BaseRadio
+              radio-id="had_covid_false"
               radio-name="had_covid"
               v-model:radioValue="had_covid"
               radio-value="false"
@@ -89,6 +94,7 @@
 
           <template #question-option>
             <BaseRadio
+              radio-id="vaccinated_true"
               radio-name="vaccinated"
               v-model:radioValue="vaccinated"
               radio-value="true"
@@ -96,6 +102,7 @@
               :model-value="vaccinated"
             />
             <BaseRadio
+              radio-id="vaccinated_false"
               radio-name="vaccinated"
               v-model:radioValue="vaccinated"
               radio-value="false"
