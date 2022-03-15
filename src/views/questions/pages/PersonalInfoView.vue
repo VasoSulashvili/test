@@ -192,7 +192,9 @@ export default {
     },
     validatorPhone() {
       if (this.phone) {
-        if (this.phone.length > 0) {
+        let pattern = /\+9955[0-9]{8}/i;
+        let result = pattern.test(this.phone);
+        if (!result || this.phone.length != 13) {
           this.errors.phone =
             "Mobile number must be valid georgian mobile format";
         } else {
@@ -201,7 +203,6 @@ export default {
       } else {
         this.errors.phone = false;
       }
-
       this.updateViewError();
     },
   },

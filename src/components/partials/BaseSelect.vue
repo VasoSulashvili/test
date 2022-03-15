@@ -54,6 +54,11 @@ select {
   font-size: 14px;
   line-height: 17px;
   color: #454545;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("../../assets/images/Vector.png");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
 }
 p {
   font-style: italic;

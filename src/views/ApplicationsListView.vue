@@ -12,7 +12,7 @@
       <div class="mb-2" v-for="(item, index) in applications" :key="index">
         <h2
           class="bg-rb-red px-5 py-2 text-white"
-          @click="activeTab = 'tab_' + index"
+          @click="toggleTab('tab_' + index)"
         >
           {{ index + 1 }}
         </h2>
@@ -145,9 +145,13 @@ export default {
     };
   },
   methods: {
+    toggleTab(tab) {
+      this.activeTab == tab ? (this.activeTab = null) : (this.activeTab = tab);
+    },
     async setApplications() {
+      const token = "004599cc-9364-4ff9-bb87-48a276728275";
       const response = await fetch(
-        "https://bootcamp-2022.devtest.ge/api/applications?token=004599cc-9364-4ff9-bb87-48a276728275"
+        "https://bootcamp-2022.devtest.ge/api/applications?token=" + token
       );
       if (response.ok) {
         this.applications = await response.json();
