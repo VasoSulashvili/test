@@ -7,16 +7,17 @@
  -->
   <div class="mb-4 ml-2">
     <div>
-      <span
-        ><input
-          type="radio"
-          :id="radioId"
-          :name="radioName"
-          :checked="isChecked"
-          :value="radioValue"
-          @change="$emit('update:radioValue', $event.target.value)"
-      /></span>
-      <label class="ml-3 pb-1" :for="radioId">{{ radioLabel }}</label>
+      <label :for="radioId">
+        <span
+          ><input
+            type="radio"
+            :name="radioName"
+            :checked="isChecked"
+            :value="radioValue"
+            @change="$emit('update:radioValue', $event.target.value)"
+        /></span>
+        <span class="ml-3 pb-1">{{ radioLabel }}</span></label
+      >
     </div>
 
     <p
@@ -32,7 +33,6 @@
 <script>
 export default {
   props: {
-    radioId: String,
     inputError: { type: [String, Boolean], required: false },
     radioName: { type: String, required: true },
     radioValue: { type: String, required: true },
