@@ -7,7 +7,7 @@
  -->
   <div class="mb-4 ml-2">
     <div>
-      <label :for="radioId">
+      <label>
         <span
           ><input
             type="radio"
