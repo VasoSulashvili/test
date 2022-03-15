@@ -267,6 +267,7 @@ export default {
         this.errors.had_covid = "Please choose if you had covid or not";
       } else {
         this.errors.had_covid = false;
+        this.errors.had_covid_at = false;
       }
       this.updateViewError();
     },
@@ -275,6 +276,7 @@ export default {
         this.errors.vaccinated = "Please choose if you are vaccinated or not";
       } else {
         this.errors.vaccinated = false;
+        this.errors.vaccinated_at = false;
       }
       this.updateViewError();
     },

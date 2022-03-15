@@ -2,7 +2,7 @@
   <div>
     <div class="flex items-center place-content-center mt-10 space-x-3">
       <button v-if="!viewError">
-        <RouterLink :to="{ name: previousRoute }">
+        <RouterLink @click="$emit('setDataToStore')" :to="{ name: previousRoute }">
           <img src="./../../assets/images/Previous.png" alt="" srcset="" />
         </RouterLink>
       </button>
